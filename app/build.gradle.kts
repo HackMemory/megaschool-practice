@@ -48,10 +48,6 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
     //glide
-    implementation 'com.github.bumptech.glide:glide:4.16.0'
-    implementation "androidx.activity:activity-ktx:1.3.1"
-
-    //sdp
-    implementation 'com.intuit.sdp:sdp-android:1.1.0'
-    implementation 'com.intuit.ssp:ssp-android:1.1.0'
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("androidx.activity:activity-ktx:1.3.1")
 }
