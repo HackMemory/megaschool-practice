@@ -13,6 +13,8 @@ class MainPresenter(
         fun displayError(message: String)
         fun showLoading()
         fun hideLoading()
+        fun blurImage()
+        fun unblurImage()
     }
 
     fun onViewCreated() {
@@ -27,6 +29,8 @@ class MainPresenter(
 
     fun onSendButtonClicked(code: String) {
         if (code.isBlank()) {
+            view.blurImage()
+            view.showLoading()
             interactor.getRandomDuck { duck, error ->
                 if (duck != null) {
                     view.displayDuck(duck)
@@ -35,18 +39,20 @@ class MainPresenter(
                 }
             }
         } else {
-            view.showLoading()
             if (validateStatusCode(code)) {
+                view.blurImage()
+                view.showLoading()
                 interactor.getDuckByStatusCode(code) { duck, error ->
-                    view.hideLoading()
                     if (duck != null) {
                         view.displayDuck(duck)
                     } else {
                         view.displayError(error ?: "Unknown error")
                     }
+                    view.unblurImage()
+                    view.hideLoading()
                 }
+
             } else {
-                view.hideLoading()
                 view.displayError("Invalid HTTP status code")
             }
         }

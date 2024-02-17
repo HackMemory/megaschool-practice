@@ -1,6 +1,8 @@
 package ru.sample.duckapp
 
 import android.graphics.BitmapFactory
+import android.graphics.ColorFilter
+import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -50,7 +52,6 @@ class MainActivity : AppCompatActivity(), MainPresenter.View {
 
     private fun setupListeners() {
         sendButton.setOnClickListener {
-            duckImageView.setImageDrawable(null)
             val code = codeEditText.text.toString()
             presenter.onSendButtonClicked(code)
         }
@@ -59,10 +60,10 @@ class MainActivity : AppCompatActivity(), MainPresenter.View {
     override fun <T> displayDuck(duck: T?) {
         when (duck) {
             is Duck -> {
-                showLoading()
                 val duckObject = duck as Duck
                 Glide.with(this)
                     .load(duckObject.url)
+                    .placeholder(duckImageView.drawable)
                     .listener(object : RequestListener<Drawable> {
                         override fun onLoadFailed(
                             e: GlideException?,
@@ -93,6 +94,7 @@ class MainActivity : AppCompatActivity(), MainPresenter.View {
                 val bitmap = BitmapFactory.decodeStream(inputStream)
                 Glide.with(this)
                     .load(bitmap)
+                    .placeholder(duckImageView.drawable)
                     .into(duckImageView)
             }
             else -> {
@@ -102,6 +104,7 @@ class MainActivity : AppCompatActivity(), MainPresenter.View {
     }
 
     override fun displayError(message: String) {
+        Glide.with(duckImageView).apply {  }
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
@@ -113,4 +116,11 @@ class MainActivity : AppCompatActivity(), MainPresenter.View {
         progressBar.visibility = View.GONE
     }
 
+    override fun blurImage() {
+        duckImageView.drawable.setColorFilter(0xff555555.toInt(), PorterDuff.Mode.MULTIPLY)
+    }
+
+    override fun unblurImage() {
+        duckImageView.drawable.colorFilter = null
+    }
 }
